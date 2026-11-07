@@ -1,0 +1,3472 @@
+{
+  "name": "SBS Knowledge Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -832,
+        480
+      ],
+      "id": "799e158c-9c84-4517-bc93-a9821aad7582",
+      "name": "Telegram Trigger",
+      "webhookId": "8a1db16d-5e66-4f27-8f35-0681801f231f",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "\"يَدٌ تُشَدُّ بِيَد\"  🤎\nWelcome to our SBS Knoweledge Assistant, We are happy to reciving your links, viedos, pdfs and your audios and give you a transcript for them... Also happy to give you a short simplification for them or questions on what you upload to help you undestanding it well\nPlease, upload your Attachments\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        -432
+      ],
+      "id": "a053269a-a6d4-40cb-9971-3ee4b24bad56",
+      "name": "Send a text message",
+      "webhookId": "94348797-23f7-4eda-a938-8fa533b785c2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd41ca8b-35a1-4934-abd3-a0dcbaa9bdca",
+              "name": "videoId",
+              "value": "={{ ($('Telegram Trigger').first().json.message.text.match(/(?:v=|youtu\\.be\\/|shorts\\/)([A-Za-z0-9_-]{11})/) || [])[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        -48
+      ],
+      "id": "f62488c6-c496-42ed-9171-e2a07e910172",
+      "name": "Edit Fields",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "2e8d55b7-7f6c-4c36-a69a-31c15c4edb73",
+              "leftValue": "={{ $json.videoId }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        256,
+        3600
+      ],
+      "id": "05bc4dc8-6579-4cfb-bae0-5cdaa4523122",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "WZiwrt8ThaVWrfpR",
+          "mode": "list",
+          "cachedResultName": "REquestes",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/WZiwrt8ThaVWrfpR"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $json.chatId }}",
+            "video_id": "={{ $json.videoId }}",
+            "status": "Recived"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        608,
+        3408
+      ],
+      "id": "48ab8fed-471c-41ea-bca1-ecfb1c4db84f",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Invalid link, Please try agin ☺️",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        3600
+      ],
+      "id": "681ed8d7-9d68-4e74-b415-f8f09fc16b22",
+      "name": "Send a text message2",
+      "webhookId": "498c90b9-fb88-4401-bcf7-913773d994dd",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "20c3a86a-aed4-40a4-81d6-2f4f86bee32e",
+              "leftValue": "={{ $json.message.chat.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -384,
+        -432
+      ],
+      "id": "ff0195a7-ea5d-4c80-9aef-7dc70e8cb3bf",
+      "name": "If",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "rowExists",
+        "dataTableId": {
+          "__rl": true,
+          "value": "WZiwrt8ThaVWrfpR",
+          "mode": "list",
+          "cachedResultName": "REquestes",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/WZiwrt8ThaVWrfpR"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ $json.message.chat.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -608,
+        -432
+      ],
+      "id": "f0b7e563-aa86-4c5e-b993-d4cc5f41f6ec",
+      "name": "If row exists",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "=https://transcriptapi.com/api/v2/youtube/transcript",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "video_url",
+              "value": "={{ $('Edit Fields2').item.json.videoId }}"
+            },
+            {
+              "name": "format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1344,
+        3504
+      ],
+      "id": "ca1d8f1b-5f51-4358-8833-91c135ce976a",
+      "name": "HTTP Request",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "pRcuu8oxwy1R7Fvq",
+          "name": "Transcript"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "m2l1nJ4PKpQdZfdK",
+          "mode": "list",
+          "cachedResultName": "transcripts",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/m2l1nJ4PKpQdZfdK"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video_id": "={{ $json.videoId }}",
+            "text": "={{ $json.text }}",
+            "segments": "={{ $json.segments }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "segments",
+              "displayName": "segments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        3504
+      ],
+      "id": "555221ca-39a0-4412-b4fc-02c9d3aeba17",
+      "name": "Insert row1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.from.id }}",
+        "text": "=There is your transcript 😉\n{{ $json.text }} \n\n\nif you want to summarize it please enter: \n/summarize\nif you want to get questions on it please enter: \n/question",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2016,
+        3504
+      ],
+      "id": "a8df4e20-5c5c-4d59-84cb-230ce1f80da0",
+      "name": "Send a text message4",
+      "webhookId": "55ca274a-3b8e-4663-b352-e449795a8519",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "924eb66e-059c-4569-be18-059373f6baa3",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "start"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "7ed5f940-1904-49c4-9a54-0c0931f1d9c6",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/videolink",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "08fd8fa0-c450-49d4-958c-0577b0297db8",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/Audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "73c5af9d-9e84-4536-bfa1-d4b2f0ecc971",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/Pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "a31a2185-1f2d-4b0b-bdc0-0f9c35837eae",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "9e6a9afd-7073-408b-9697-b35bc430cb76",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/summarize",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "741c6e4b-5310-441b-9f26-17a83d698349"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "summarize"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "4e47389d-1fbb-4d59-9024-294db31695be",
+                    "leftValue": "={{ $('Telegram Trigger').first().json.message.text}}",
+                    "rightValue": "/question",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "question"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "d834e639-627d-4ffa-b16a-fd410e2310ef",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "video",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "post-video"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "8a10cd25-777a-4308-9fd7-f170ffc730a8",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdfff"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "31a158b1-ec9c-40af-b3f0-4647273df5f0",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "audio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "ad5a3d5a-7e75-494f-8fcf-c88388d166cf",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "image",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "fa442b83-21ca-4c10-b61e-d389e55413c8",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        -384,
+        1072
+      ],
+      "id": "30dd24b3-02a6-452e-9b80-cf529b72a561",
+      "name": "Switch1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f593ca55-2432-4051-9063-169c79df089f",
+              "name": "videoId",
+              "value": "={{ $('Edit Fields2').item.json.videoId }}",
+              "type": "string"
+            },
+            {
+              "id": "c4749cb8-6e27-42c8-9301-8bb77d36d255",
+              "name": "chatId",
+              "value": "={{ $('Edit Fields2').item.json.chatId }}",
+              "type": "string"
+            },
+            {
+              "id": "14243b94-f5a3-4193-abb9-4ca78666842c",
+              "name": "text",
+              "value": "={{ $json.transcript.map(t => t.text).join(' ') }}\n\n",
+              "type": "string"
+            },
+            {
+              "id": "fcafb609-f3fb-4248-b95b-fa055aa5bb31",
+              "name": "segments",
+              "value": "={{ JSON.stringify($json.transcript) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1568,
+        3504
+      ],
+      "id": "075aeddf-9bcd-4180-beeb-d4d389f88779",
+      "name": "Edit Fields1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.user_id }}",
+        "text": "Please enter the type of data you will use: \n/videolink\n/Pdf\n/Audio \n/image \n/text",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        -240
+      ],
+      "id": "4b449f85-ecac-426f-81dd-0e855cafb2cb",
+      "name": "Send a text message5",
+      "webhookId": "541e89f5-4107-4dd9-a5f6-2651ff38d591",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "insert into progress (user_id)\nvalues ('{{ $json.message.chat.id }}')\non conflict (user_id) do nothing;\n\nselect user_id, status\nfrom progress\nwhere user_id = '{{ $json.message.chat.id }}';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        -608,
+        1248
+      ],
+      "id": "94e84be3-1c44-481e-8690-fb842f1b520b",
+      "name": "Execute a SQL query",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd41ca8b-35a1-4934-abd3-a0dcbaa9bdca",
+              "name": "videoId",
+              "value": "={{ ($('Telegram Trigger').first().json.message.text.match(/(?:v=|youtu\\.be\\/|shorts\\/)([A-Za-z0-9_-]{11})/) || [])[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        3600
+      ],
+      "id": "2fb6b2b4-4875-4859-a94a-58db98ab3940",
+      "name": "Edit Fields2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        -240
+      ],
+      "id": "a668766f-8ac4-461f-89f6-752944017600",
+      "name": "Execute a SQL query1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "progress",
+          "mode": "list",
+          "cachedResultName": "progress"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $json.chatId }}",
+            "status": "video"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_file_type",
+              "displayName": "last_file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "last_file_url",
+              "displayName": "last_file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        -48
+      ],
+      "id": "1fffe826-d6e5-4cd5-9385-0adb78d06c36",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Insert row').item.json.chat_id }}",
+        "text": "=There is your transcript 😉\n{{ $('Get row(s)').item.json.text }}\n\nif you want to summarize it please enter: \n/summarize\nif you want to get questions on it please enter: \n/question",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        3312
+      ],
+      "id": "ac799da3-2455-4eea-98a4-099bc5e509ce",
+      "name": "Send a text message1",
+      "webhookId": "34e86a1f-dfac-42ad-bd6f-4daf425a9c28",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "m2l1nJ4PKpQdZfdK",
+          "mode": "list",
+          "cachedResultName": "transcripts",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/m2l1nJ4PKpQdZfdK"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "video_id",
+              "keyValue": "={{ $('Edit Fields2').first().json.videoId }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        3408
+      ],
+      "id": "8f5efab8-d46c-4c44-a29d-eac4fea316b0",
+      "name": "Get row(s)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        1568,
+        3312
+      ],
+      "id": "8045ca2b-0463-4b5b-8b90-d10cec4eed76",
+      "name": "Execute a SQL query2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        2240,
+        3504
+      ],
+      "id": "8f220577-58b4-46ba-8779-269d097cbdd8",
+      "name": "Execute a SQL query3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "Please enter your youtube video link 🔥🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        -48
+      ],
+      "id": "73311cca-bc9c-46cc-8d02-0ad6d278ca29",
+      "name": "Send a text message3",
+      "webhookId": "e4ad3e34-4760-4903-817f-e6d3d42d7da7",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Please summarize this transcript without adding any information or links from you didn't be mentioned in the transcript\n\n{{ $json.transcript }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        912
+      ],
+      "id": "8bca945d-87c5-463a-ae84-942026a61792",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "TryaJ1F7lLoVjIoT",
+          "mode": "list",
+          "cachedResultName": "current video",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/TryaJ1F7lLoVjIoT"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        912
+      ],
+      "id": "05ea0267-634b-4ceb-89b9-7c819b47850a",
+      "name": "Get row(s)1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "TryaJ1F7lLoVjIoT",
+          "mode": "list",
+          "cachedResultName": "current video",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/TryaJ1F7lLoVjIoT"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        2208
+      ],
+      "id": "196ac346-a053-4904-90a3-ea1f74fcd8d7",
+      "name": "Get row(s)2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Please give me question link you do it on this transcript without adding any information or links from you didn't be mentioned in the transcript\n\n{{ $json.transcript }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        2208
+      ],
+      "id": "f22caa49-4eae-418e-9ff2-539b8e135939",
+      "name": "Message a model1",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "TryaJ1F7lLoVjIoT",
+          "mode": "list",
+          "cachedResultName": "current video",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/TryaJ1F7lLoVjIoT"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ $('Telegram Trigger').first().json.message.chat.id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+            "video_id": "={{ $('Edit Fields2').first().json.videoId }}",
+            "transcript": "={{ $('Get row(s)').item.json.text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "transcript",
+              "displayName": "transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        3312
+      ],
+      "id": "f44aff46-5463-4593-8608-8d4800d8dabb",
+      "name": "Upsert row(s)"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        720
+      ],
+      "id": "0f264248-6d65-4f33-be72-14625f9cad1a",
+      "name": "Send a text message6",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        896,
+        2256
+      ],
+      "id": "5edb3bce-aa63-47e6-9f06-5b8f7a61cf62",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        912
+      ],
+      "id": "1ce2e15c-f203-4258-8252-3ed3b641b868",
+      "name": "Send a text message7",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        2256
+      ],
+      "id": "23fc6f56-9258-434e-99b6-bd02ef8a41bc",
+      "name": "Send a text message8",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        2064
+      ],
+      "id": "5aca4766-5131-4a69-a4ef-81df81d2011f",
+      "name": "Send a text message9",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        896,
+        912
+      ],
+      "id": "161f4445-ee12-42f1-80ae-270b39c62bd5",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        144
+      ],
+      "id": "5e68ac9e-56ac-41e9-a700-aa5aa7788f0d",
+      "name": "Edit Fields3",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "progress",
+          "mode": "list",
+          "cachedResultName": "progress"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $json.chatId }}",
+            "status": "pdf"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_file_type",
+              "displayName": "last_file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "last_file_url",
+              "displayName": "last_file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        144
+      ],
+      "id": "21c94c85-b815-4a0c-9dd6-01a47f79e65b",
+      "name": "Insert or update rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "Please upload your pdf and make sure it's smaller than 20MB ✍🏻",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        144
+      ],
+      "id": "5e8fa2b9-ab14-4f79-8284-adf9372f988b",
+      "name": "Send a text message10",
+      "webhookId": "e4ad3e34-4760-4903-817f-e6d3d42d7da7",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.document.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        2736
+      ],
+      "id": "42c1f952-a46d-4c26-825b-a02146ba60ac",
+      "name": "Get a file",
+      "webhookId": "2024c87b-f903-471d-a2be-ceaeea2fa09b",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        2736
+      ],
+      "id": "7846f5fb-f0dd-4a44-b781-21f2f6b96bf5",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Please summarize this transcript without adding any information or links from you didn't be mentioned in the transcript and the summary won't have any special chractars and also ot ecced the limit of 2500 letters\n\n{{ $json.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        2736
+      ],
+      "id": "21e98810-caaa-48c1-a4c6-fc1c6a371db9",
+      "name": "Message a model2",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        2496
+      ],
+      "id": "b96baf50-af40-47b8-b1b4-a68057066b6b",
+      "name": "Send a text message11",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        2736
+      ],
+      "id": "f1dc4a73-e342-4b5f-8939-5e59ac08706b",
+      "name": "Send a text message12",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        2976
+      ],
+      "id": "ef17729a-02e8-40b0-9c08-fcd5817383b4",
+      "name": "Stop and Error2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        1120,
+        2544
+      ],
+      "id": "5c13bc8e-bcc5-4d63-8103-faa7ca0da5b1",
+      "name": "Execute a SQL query4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        2448
+      ],
+      "id": "e356effc-2deb-45bb-a71e-2d04209c6b74",
+      "name": "Edit Fields4",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "progress",
+          "mode": "list",
+          "cachedResultName": "progress"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $json.chatId }}",
+            "status": "audio"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_file_type",
+              "displayName": "last_file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "last_file_url",
+              "displayName": "last_file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        2448
+      ],
+      "id": "91f1a424-69ac-4e9a-b98c-576b6ae284fb",
+      "name": "Insert or update rows in a table2",
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "Please upload your audio and make sure it's not forward to avoid some technical problems  ⏯️",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        2448
+      ],
+      "id": "694ec910-1c7c-4e56-96c6-fbcd29cf1b67",
+      "name": "Send a text message13",
+      "webhookId": "e4ad3e34-4760-4903-817f-e6d3d42d7da7",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.audio.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        1824
+      ],
+      "id": "d416f80b-0c5e-4c20-bfaa-d47cf47fb29d",
+      "name": "Get a file1",
+      "webhookId": "3fa8a6a8-1b31-4de4-9773-aa0fcb974070",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "Gemini 3.5 Flash Lite"
+        },
+        "text": "explain what you have heared in the audio and mention many details \ntrying to not excced 2500 letters \ngive me the result in arabic",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1824
+      ],
+      "id": "3f3ecfb7-f061-43f0-b892-891acfe4f0d1",
+      "name": "Analyze audio",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        1584
+      ],
+      "id": "81b14819-f683-4aad-9c72-55280bb9ea27",
+      "name": "Send a text message16",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        1872
+      ],
+      "id": "64947634-dcf5-4623-a63d-6fa8997c4b8b",
+      "name": "Send a text message17",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        896,
+        1920
+      ],
+      "id": "5be6476d-bff6-4e7b-a56e-410b5e60f5c3",
+      "name": "Stop and Error4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        896,
+        1680
+      ],
+      "id": "3e3320ec-d96b-4e4f-8581-2ab32579e0fd",
+      "name": "Execute a SQL query5",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        336
+      ],
+      "id": "37e30881-9685-4738-8e25-9c99673964d3",
+      "name": "Edit Fields5",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "progress",
+          "mode": "list",
+          "cachedResultName": "progress"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $json.chatId }}",
+            "status": "image"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_file_type",
+              "displayName": "last_file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "last_file_url",
+              "displayName": "last_file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        336
+      ],
+      "id": "46dedb53-8c7a-4f14-83d6-847ad980f36e",
+      "name": "Insert or update rows in a table3",
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "Please upload your image 📸",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        336
+      ],
+      "id": "e1c9cec7-ba6f-4607-ab3a-b33f8cad3a8b",
+      "name": "Send a text message14",
+      "webhookId": "e4ad3e34-4760-4903-817f-e6d3d42d7da7",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.photo[0].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        3168
+      ],
+      "id": "f1b4d179-0428-40a2-b5b6-742ee00c75a5",
+      "name": "Get a file2",
+      "webhookId": "fd341914-51c1-42f9-a26a-961c09ef6f4d",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash",
+          "mode": "list",
+          "cachedResultName": "Gemini 3.5 Flash"
+        },
+        "text": "What's in this image? descibe all details and try not to xeceed 2500 letters and make your answer in arabic",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        3168
+      ],
+      "id": "4df9f92c-701f-4b37-af7f-00063111993e",
+      "name": "Analyze an image",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        2928
+      ],
+      "id": "e6183c99-d61f-4fbf-b98e-b7c368e132de",
+      "name": "Send a text message18",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        3216
+      ],
+      "id": "44f36cf6-297d-4d18-a473-7c82fbc61554",
+      "name": "Send a text message19",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        896,
+        3216
+      ],
+      "id": "1138427b-e773-4a70-bd2d-aefc3ffcf7ae",
+      "name": "Stop and Error5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        896,
+        3024
+      ],
+      "id": "22226cdd-7401-4f38-a31d-95e5fc82dbdb",
+      "name": "Execute a SQL query6",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "53c05bb5-e95f-4c8f-9701-0440f9e1f1a1",
+              "name": "=chatId",
+              "value": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -96,
+        528
+      ],
+      "id": "5556bb1b-93a1-4926-9f3c-9d7405c638ee",
+      "name": "Edit Fields6",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public",
+          "cachedResultName": "public",
+          "cachedResultUrl": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "progress",
+          "mode": "list",
+          "cachedResultName": "progress"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ $json.chatId }}",
+            "status": "text"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            },
+            {
+              "id": "last_file_type",
+              "displayName": "last_file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "last_file_url",
+              "displayName": "last_file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        256,
+        528
+      ],
+      "id": "316c09c7-46d8-4ebd-87fd-87caa7619209",
+      "name": "Insert or update rows in a table4",
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "Please upload the text you would like to have explained 📝",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        608,
+        528
+      ],
+      "id": "103b5661-39a7-47f5-b2d3-d2ce4659ab70",
+      "name": "Send a text message15",
+      "webhookId": "e4ad3e34-4760-4903-817f-e6d3d42d7da7",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Please explain this text and don't add any additional information from you\n{{ $('Telegram Trigger').item.json.message.text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        1344
+      ],
+      "id": "bf72e345-0a5f-4e14-ba13-b5535cd7243f",
+      "name": "Message a model3",
+      "retryOnFail": true,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FA3ss3NF6J27CGbF",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "errorMessage": "AI is busy "
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        608,
+        1392
+      ],
+      "id": "b3fbc4bd-7647-49e7-970d-1b4c289a64b3",
+      "name": "Stop and Error3"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "sorry, we are busy right now 😵‍💫 \nCould you try again in a bit? \nYou are doing great, Keep your spirits up ☝🏻🔥",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1392
+      ],
+      "id": "14f648f7-332c-4464-a677-873a043705a8",
+      "name": "Send a text message20",
+      "webhookId": "e05e8b54-dd95-4ca8-872a-41e758c3ab40",
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
+        "text": "=There is your explaination\n\n{{ $json.content.parts[0].text }}\n\n\n",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1104
+      ],
+      "id": "aac5ace7-d455-4c62-b6f8-1b352ea92500",
+      "name": "Send a text message21",
+      "webhookId": "c4ca2268-5764-4d1a-bc69-40f81f7851de",
+      "credentials": {
+        "telegramApi": {
+          "id": "STYAusY2CfMWdkzb",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update progress\nset status = 'ready',\n    updated_at = now()\nwhere user_id = '{{ $('Telegram Trigger').first().json.message.chat.id }}'\nreturning user_id, status;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.8,
+      "position": [
+        608,
+        1200
+      ],
+      "id": "0e1bb1bc-4859-4384-b315-40cd1ce2bbe1",
+      "name": "Execute a SQL query7",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "0nOzXUubwe5qyCVI",
+          "name": "SBS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "WZiwrt8ThaVWrfpR",
+          "mode": "list",
+          "cachedResultName": "REquestes",
+          "cachedResultUrl": "/projects/R8wTot87RLrGpczo/datatables/WZiwrt8ThaVWrfpR"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $json.result.chat.id }}",
+            "video_id": "null",
+            "status": "null"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "video_id",
+              "displayName": "video_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        -432
+      ],
+      "id": "049481c6-e339-418f-ba89-6a20ede23dc7",
+      "name": "Insert row2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "035cfbc7-251e-4ea3-9201-e3efea76ce4e",
+              "leftValue": "={{ $('Get row(s)').item.json.text}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1120,
+        3408
+      ],
+      "id": "838a6d3b-96cd-4041-b8d6-da9017a28a03",
+      "name": "If2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "If row exists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Insert row2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "If row exists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message5": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message4": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query2": {
+      "main": [
+        [
+          {
+            "node": "Upsert row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)2": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message8": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message7": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message11",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message12": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message11": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Analyze audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze audio": {
+      "main": [
+        [
+          {
+            "node": "Send a text message16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message16": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message17": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file2": {
+      "main": [
+        [
+          {
+            "node": "Analyze an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message18": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message19": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze an image": {
+      "main": [
+        [
+          {
+            "node": "Send a text message18",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert or update rows in a table4": {
+      "main": [
+        [
+          {
+            "node": "Send a text message15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message21",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message20": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute a SQL query7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message21": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "3A8u6mqrKZQEaV3L",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "8fa559e8-0e24-4cbc-af6c-f4d7d765c4ee",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c4bcd2b8499371550969d6f952174d516d5009dc3bbfdc21abbc6637653b9286"
+  },
+  "nodeGroups": [],
+  "id": "onucj5dfFvQPkmEl",
+  "tags": []
+}
